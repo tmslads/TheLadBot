@@ -8,13 +8,15 @@ reddit = praw.Reddit(client_id='AmJbMF6Sh56JNg',
                      client_secret='1K1ovK2ku9EP_usjLR-8CFRiQB8',
                      user_agent='windows:test:v0.1 (by u/unclesam79)')
 
-subreddits = ['dankmemes', 'memes', 'pewdiepiesubmissions']
-filters = (('all', 5), ('month', 5), ('day', 10), ('week', 10))
+subreddits = ['dankmemes', 'memes', 'pewdiepiesubmissions', 'biologymemes', 'programmerhumor']
+filters = (('all', 3), ('month', 3), ('day', 10), ('week', 5))
 SUBMISSIONS = []
 
 
 def get_submissions():
     """Add submissions (title, url, extension) to SUBMISSIONS"""
+
+    print("Fetching submissions...")
     SUBMISSIONS.clear()  # Removes previously fetched submissions
     for sub in subreddits:
         for i in range(4):
@@ -27,6 +29,7 @@ def get_submissions():
 
 def get_meme():
     """Return a random submission (title, url, extension) from SUBMISSIONS"""
+
     if SUBMISSIONS == []:
         get_submissions()
         submission = r.choice(SUBMISSIONS)
@@ -38,6 +41,7 @@ def get_meme():
 
 def save_meme(number=1):
     """Download memes (default is 1 meme)"""
+
     for i in range(number):
         meme = get_meme()
         response = requests.get(meme[1], stream=True)
@@ -51,6 +55,7 @@ def save_meme(number=1):
 
 def removed_nonalnum(title):
     """Return title after stripping special characters"""
+
     result = ''
     for character in title:
         if character.isalnum() or character.isspace():
@@ -59,3 +64,4 @@ def removed_nonalnum(title):
 
 
 get_submissions()
+r.shuffle(SUBMISSIONS)
