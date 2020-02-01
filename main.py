@@ -36,8 +36,9 @@ def send_meme(update, context):
         name = 'you'
     else:
         name = update.message.from_user.first_name
-    msg = f"{name} asked me for a meme. i have so many. here's a cute one\
-    :\n(i'll delete it after a while cause seize the moment ye? bahaha)"
+    msg = f'meme for {name}'
+    # msg = f"{name} asked me for a meme. i have so many. here's a cute one\
+    # :\n(i'll delete it after a while cause seize the moment ye? bahaha)"
     msg_sent = lad_bot.send_message(chat_id=update.effective_chat.id, text=msg, disable_notification=True)
     sleep(1)
     title, url = memes.get_meme()[:2]
@@ -46,15 +47,15 @@ def send_meme(update, context):
     print(f"Meme sent for {update.message.from_user.first_name} {update.message.from_user.last_name} (username: {update.message.from_user.username}).")
 
 
-def del_memes():
+def del_memes(context):
     """Delete the memes sent and edit the text message sent with them"""
 
     number = len(MEMES_SENT)
     for meme_sent in MEMES_SENT:  # Delete the photo sent
         meme_sent[0].delete()
-    for meme_sent in MEMES_SENT:  # Edit the message sent
-        edited_text = f"i sent a meme for {meme_sent[3]} but its deleted now. sent such a coolio meme and you missed it? lol better luck next time cow"
-        lad_bot.edit_message_text(chat_id=meme_sent[2], message_id=meme_sent[1].message_id, text=edited_text)
+    # for meme_sent in MEMES_SENT:  # Edit the message sent
+        # edited_text = f"i sent a meme for {meme_sent[3]} but its deleted now. sent such a coolio meme and you missed it? lol better luck next time cow"
+        # lad_bot.edit_message_text(chat_id=meme_sent[2], message_id=meme_sent[1].message_id, text=edited_text)
 
     del MEMES_SENT[:]
     print(f"{number} meme(s) deleted.")
