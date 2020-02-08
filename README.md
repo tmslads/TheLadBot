@@ -1,2 +1,2 @@
 # TheLadBot
-Ann inspired telegram bot
+Lad Telegram bot
