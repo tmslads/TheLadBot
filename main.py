@@ -24,7 +24,7 @@ lad_bot = updater.bot
 def inspire(update, context):
     """Send a quote"""
 
-    responses = ['Here\'s some inspiration for you',\
+    responses = ['Here\'s some good quotery for you',\
     'Here\'s a nice quote for you', 'Here you go',\
     'Here you are', 'This is a nice one',\
     'I like this one', 'This one really resonated with me']
