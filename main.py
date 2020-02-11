@@ -24,10 +24,17 @@ lad_bot = updater.bot
 def inspire(update, context):
     """Send a quote"""
 
-    lad_bot.send_message(chat_id=update.effective_chat.id, text=f"{update.message.from_user.first_name} asked for some inspiration. you came to the right person broski.", disable_notification=True)
-    sleep(1)
-    lad_bot.send_message(chat_id=update.effective_chat.id, text=next(quote.QUOTES), disable_notification=True)
+    responses = ['Here\'s some inspiration for you',\
+    'Here\'s a nice quote for you', 'Here you go',\
+    'Here you are', 'This is a nice one',\
+    'I like this one', 'This one really resonated with me']
 
+    quote = quotes.get_quote()
+    lad_bot.send_message(chat_id=update.effective_chat.id, text=f"{r.choice(responses)}, {update.message.from_user.first_name}:", disable_notification=True)
+    sleep(1)
+    lad_bot.send_message(chat_id=update.effective_chat.id, text=f"<i><b>{quote}</b></i>", parse_mode='HTML', disable_notification=True)
+
+    print(f"{update.message.from_user.first_name} {update.message.from_user.last_name} (username: {update.message.from_user.username}) was inspired.")
 
 def send_meme(update, context):
     """Send a meme"""
@@ -64,6 +71,8 @@ def del_memes(context):
 meme_handler = CommandHandler(command='meme', callback=send_meme)
 dispatcher.add_handler(meme_handler)
 
+inspiration_handler = CommandHandler(command='inspire', callback=inspire)
+dispatcher.add_handler(inspiration_handler)
 
 updater.job_queue.run_repeating(del_memes, interval=120)  # will be called every 2 minutes
 updater.start_polling()
