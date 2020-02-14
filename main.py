@@ -11,6 +11,8 @@ import quotes
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
                     level=logging.INFO)
 
+group_ids = {'12b': '-1001396726510', 'grade12': '-1001210862980', 'wait': '-1001427310423', 'testing' : '-1001248269460', 'pass' : '-375666484'}
+
 MEMES_SENT = []
 
 with open("token.txt", 'r') as file:
@@ -73,6 +75,7 @@ dispatcher.add_handler(meme_handler)
 
 inspiration_handler = CommandHandler(command='inspire', callback=inspire)
 dispatcher.add_handler(inspiration_handler)
+
 
 updater.job_queue.run_repeating(del_memes, interval=120)  # will be called every 2 minutes
 updater.start_polling()
