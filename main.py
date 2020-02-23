@@ -29,7 +29,15 @@ def inspire(update, context):
     responses = ['Here\'s some good quotery for you',\
     'Here\'s a nice quote for you', 'Here you go',\
     'Here you are', 'This is a nice one',\
-    'I like this one', 'This one really resonated with me']
+    'I like this one', 'This one really resonated with me',\
+    'This one\'s cute', 'This is a cute one',\
+    'Here\'s a cute quote', 'This one\'s pretty cool',\
+    'Here\'s a nice quote for you', 'Here you go',\
+    'Here you are', 'This is a nice quote',\
+    'I like this quote', 'This quote really resonated with me',\
+    'This quote\'s cute', 'This is a cute quote',\
+    'Here\'s a cute quote', 'This is a cool quote',\
+    'I think you\'ll like this one', 'I think you\'ll like this quote']
 
     quote = quotes.get_quote()
     lad_bot.send_message(chat_id=update.effective_chat.id, text=f"{r.choice(responses)}, {update.message.from_user.first_name}:", disable_notification=True)
