@@ -8,7 +8,7 @@ reddit = praw.Reddit(client_id='AmJbMF6Sh56JNg',
                      client_secret='1K1ovK2ku9EP_usjLR-8CFRiQB8',
                      user_agent='windows:test:v0.1 (by u/unclesam79)')
 
-subreddits = ['dankmemes', 'memes', 'pewdiepiesubmissions', 'biologymemes', 'programmerhumor']
+subreddits = ['dankmemes', 'memes', 'pewdiepiesubmissions', 'biologymemes', 'programmerhumor', 'chemistrymemes', 'physicsmemes']
 filters = (('all', 3), ('month', 3), ('day', 10), ('week', 5))
 SUBMISSIONS = []
 
