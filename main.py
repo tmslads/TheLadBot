@@ -3,7 +3,8 @@ import logging
 import random as r
 
 from telegram.ext import Updater
-from telegram.ext import CommandHandler
+from telegram.ext import CommandHandler, MessageHandler
+from telegram.ext import Filters
 
 import memes
 import quotes
@@ -78,12 +79,23 @@ def del_memes(context):
     print(f"{number} meme(s) deleted.")
 
 
-meme_handler = CommandHandler(command='meme', callback=send_meme)
-dispatcher.add_handler(meme_handler)
+def wadlord(update, context):
+    """lad word = wad lord"""
 
-inspiration_handler = CommandHandler(command='inspire', callback=inspire)
-dispatcher.add_handler(inspiration_handler)
+    msg = update.message.text
+    punctuation = r"""!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~"""
+    msg = ''.join(c for c in msg if c not in punctuation)  # Strip punctuation from message
+    msg = msg.split()
+    if len(msg) == 2:
+        if r.choice([0, 1]):
+            print('wad lord in', update.effective_chat.title, f'({update.effective_chat.type})')
+            waddened = msg[1][0] + msg[0][1:] + ' ' + msg[0][0] + msg[1][1:]  # the words exchange their first letters
+            lad_bot.send_message(chat_id=update.effective_chat.id, reply_to_message_id=update.message.message_id, text=waddened)
 
+
+dispatcher.add_handler(MessageHandler(Filters.group & Filters.text & ~ Filters.update.edited_message, wadlord))
+dispatcher.add_handler(CommandHandler(command='meme', callback=send_meme))
+dispatcher.add_handler(CommandHandler(command='inspire', callback=inspire))
 
 updater.job_queue.run_repeating(del_memes, interval=120)  # will be called every 2 minutes
 updater.start_polling()
