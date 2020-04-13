@@ -4,8 +4,10 @@ import requests
 
 import praw
 
-reddit = praw.Reddit(client_id='AmJbMF6Sh56JNg',
-                             client_secret='1K1ovK2ku9EP_usjLR-8CFRiQB8',
+
+reddit_id, reddit_secret = open('creds.txt', 'r').read().split()
+reddit = praw.Reddit(client_id=reddit_id,
+                             client_secret=reddit_secret,
                              user_agent='windows:test:v0.1 (by u/unclesam79)')
 
 
