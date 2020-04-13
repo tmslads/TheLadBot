@@ -5,8 +5,9 @@ import random as r
 from telegram.ext import Updater
 from telegram.ext import CommandHandler, MessageHandler
 from telegram.ext import Filters
+import telegram.utils
 
-import memes
+import submission_fetcher
 import quotes
 
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -23,25 +24,38 @@ updater = Updater(token=f'{bot_token}', use_context=True)
 dispatcher = updater.dispatcher
 lad_bot = updater.bot
 
+quote_msgs = ['Here\'s some good quotery for you',\
+'Here\'s a nice quote for you', 'Here you go',\
+'Here you are', 'This is a nice one',\
+'I like this one', 'This one really resonated with me',\
+'This one\'s cute', 'This is a cute one',\
+'Here\'s a cute quote', 'This one\'s pretty cool',\
+'Here\'s a nice quote for you', 'Here you go',\
+'Here you are', 'This is a nice quote',\
+'I like this quote', 'This quote really resonated with me',\
+'This quote\'s cute', 'This is a cute quote',\
+'Here\'s a cute quote', 'This is a cool quote',\
+'I think you\'ll like this one', 'I think you\'ll like this quote']
+
+song_msgs = ['Here\'s some good songery for you',\
+'Here\'s a nice song for you', 'Here you go',\
+'Here you are', 'This is a nice one',\
+'I like this one', 'This one really resonated with me',\
+'This one\'s cute', 'This is a cute one',\
+'Here\'s a cute song', 'This one\'s pretty cool',\
+'Here\'s a nice song for you', 'Here you go',\
+'Here you are', 'This is a nice song',\
+'I like this song', 'This song really resonated with me',\
+'This song\'s cute', 'This is a cute song',\
+'Here\'s a cute song', 'This is a cool song',\
+'I think you\'ll like this one', 'I think you\'ll like this song']
+
 
 def inspire(update, context):
     """Send a quote"""
 
-    responses = ['Here\'s some good quotery for you',\
-    'Here\'s a nice quote for you', 'Here you go',\
-    'Here you are', 'This is a nice one',\
-    'I like this one', 'This one really resonated with me',\
-    'This one\'s cute', 'This is a cute one',\
-    'Here\'s a cute quote', 'This one\'s pretty cool',\
-    'Here\'s a nice quote for you', 'Here you go',\
-    'Here you are', 'This is a nice quote',\
-    'I like this quote', 'This quote really resonated with me',\
-    'This quote\'s cute', 'This is a cute quote',\
-    'Here\'s a cute quote', 'This is a cool quote',\
-    'I think you\'ll like this one', 'I think you\'ll like this quote']
-
     quote = quotes.get_quote()
-    lad_bot.send_message(chat_id=update.effective_chat.id, text=f"{r.choice(responses)}, {update.message.from_user.first_name}:", disable_notification=True)
+    lad_bot.send_message(chat_id=update.effective_chat.id, text=f"{r.choice(quote_msgs)}, {update.message.from_user.first_name}:", disable_notification=True)
     sleep(1)
     lad_bot.send_message(chat_id=update.effective_chat.id, text=f"<i><b>{quote}</b></i>", parse_mode='HTML', disable_notification=True)
 
@@ -59,11 +73,27 @@ def send_meme(update, context):
     # :\n(i'll delete it after a while cause seize the moment ye? bahaha)"
     msg_sent = lad_bot.send_message(chat_id=update.effective_chat.id, text=msg, disable_notification=True)
     sleep(1)
-    title, url = memes.get_meme()[:2]
+    post = submission_fetcher.meme_fetcher.get_post()
+    title, url = post.title, post.url
     photo_sent = lad_bot.send_photo(chat_id=update.effective_chat.id, photo=url, caption=title, disable_notification=True)
     MEMES_SENT.append((photo_sent, msg_sent, update.effective_chat.id, update.message.from_user.first_name))
     print(f"Meme sent for {update.message.from_user.first_name} {update.message.from_user.last_name} (username: {update.message.from_user.username}).")
 
+
+def send_song(update, context):
+    """Send a song"""
+
+    if update.effective_chat.type != 'private':  # If not called in a private chat
+        # link = telegram.utils.helpers.create_deep_linked_url('@jumpiecookiebot')
+        link = "@jumpiecookiebot"
+        lad_bot.send_message(chat_id=update.effective_chat.id, reply_to_message_id=update.message.message_id, text=f"Please message me at {link} and I will send you songs there.")
+        return
+
+    song = submission_fetcher.song_fetcher.get_post()
+    lad_bot.send_message(chat_id=update.effective_chat.id, text=r.choice(song_msgs)+':\n'+song.title)
+    sleep(1)
+    lad_bot.send_message(chat_id=update.effective_chat.id, text=song.url)
+    print(f"Song sent for {update.message.from_user.first_name} {update.message.from_user.last_name} (username: {update.message.from_user.username}).")
 
 def del_memes(context):
     """Delete the memes sent and edit the text message sent with them"""
@@ -93,9 +123,10 @@ def wadlord(update, context):
             lad_bot.send_message(chat_id=update.effective_chat.id, reply_to_message_id=update.message.message_id, text=waddened)
 
 
-dispatcher.add_handler(MessageHandler(Filters.group & Filters.text & ~ Filters.update.edited_message, wadlord))
 dispatcher.add_handler(CommandHandler(command='meme', callback=send_meme))
+dispatcher.add_handler(CommandHandler(command='song', callback=send_song))
 dispatcher.add_handler(CommandHandler(command='inspire', callback=inspire))
+dispatcher.add_handler(MessageHandler(Filters.group & Filters.text & ~ Filters.update.edited_message, wadlord))
 
 updater.job_queue.run_repeating(del_memes, interval=120)  # will be called every 2 minutes
 updater.start_polling()
