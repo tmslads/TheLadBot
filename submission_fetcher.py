@@ -35,7 +35,7 @@ class SubmissionFetcher():
     def get_post(self):
         """Return a random submission from SUBMISSIONS"""
 
-        if self.SUBMISSIONS == []:
+        if not self.SUBMISSIONS:
             self.fetch_submissions()
         post = r.choice(self.SUBMISSIONS)
         self.SUBMISSIONS.remove(post)
