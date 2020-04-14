@@ -102,7 +102,7 @@ def del_memes(context):
         # edited_text = f"i sent a meme for {meme_sent[3]} but its deleted now. sent such a coolio meme and you missed it? lol better luck next time cow"
         # lad_bot.edit_message_text(chat_id=meme_sent[2], message_id=meme_sent[1].message_id, text=edited_text)
 
-    del MEMES_SENT[:]
+    MEMES_SENT.clear()
     if number != 0:
         print("Memes deleted.")
 
