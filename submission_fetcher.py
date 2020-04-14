@@ -69,5 +69,9 @@ meme_filters = (('all', 3), ('month', 3), ('day', 10), ('week', 5))
 song_subreddits = ['listentothis']
 song_filters = (('month', 5), ('week', 10), ('day', 15))
 
+joke_subreddits = ['dadjokes']
+joke_filters = (('all', 10), ('month', 10), ('day', 10), ('week', 10))
+
 meme_fetcher = SubmissionFetcher(subreddits=meme_subreddits, filter_count=4, filters=meme_filters)
 song_fetcher = SubmissionFetcher(subreddits=song_subreddits, filter_count=3, filters=song_filters)
+joke_fetcher = SubmissionFetcher(subreddits=joke_subreddits, filter_count=4, filters=joke_filters)
