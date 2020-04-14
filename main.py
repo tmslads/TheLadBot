@@ -41,11 +41,13 @@ def inspire(update, context):
     """Send a quote"""
 
     quote = quotes.get_quote()
-    lad_bot.send_message(chat_id=update.effective_chat.id, text=f"{r.choice(msgs).replace('_', 'quote')}, {update.message.from_user.first_name}:", disable_notification=True)
+    lad_bot.send_message(chat_id=update.effective_chat.id, text=f"{r.choice(msgs).replace('_', 'quote')}, 
+    {update.message.from_user.first_name}:", disable_notification=True)
     sleep(1)
     lad_bot.send_message(chat_id=update.effective_chat.id, text=f"<i><b>{quote}</b></i>", parse_mode='HTML', disable_notification=True)
 
-    print(f"{update.message.from_user.first_name} {update.message.from_user.last_name} (username: {update.message.from_user.username}) was inspired.")
+    print(f"{update.message.from_user.first_name} {update.message.from_user.last_name} 
+    (username: {update.message.from_user.username}) was inspired.")
 
 def send_meme(update, context):
     """Send a meme"""
@@ -63,7 +65,9 @@ def send_meme(update, context):
     title, url = post.title, post.url
     photo_sent = lad_bot.send_photo(chat_id=update.effective_chat.id, photo=url, caption=title, disable_notification=True)
     MEMES_SENT.append((photo_sent, msg_sent, update.effective_chat.id, update.message.from_user.first_name))
-    print(f"Meme sent for {update.message.from_user.first_name} {update.message.from_user.last_name} (username: {update.message.from_user.username}).")
+    print(f"Meme sent for {update.message.from_user.first_name} 
+    {update.message.from_user.last_name} 
+    (username: {update.message.from_user.username}).")
 
 
 def send_song(update, context):
@@ -72,7 +76,8 @@ def send_song(update, context):
     if update.effective_chat.type != 'private':  # If not called in a private chat
         # link = telegram.utils.helpers.create_deep_linked_url('@jumpiecookiebot')
         link = "@jumpiecookiebot"
-        lad_bot.send_message(chat_id=update.effective_chat.id, reply_to_message_id=update.message.message_id, text=f"Please message me at {link} and I will send you songs there.")
+        lad_bot.send_message(chat_id=update.effective_chat.id, reply_to_message_id=update.message.message_id,
+        text=f"Please message me at {link} and I will send you songs there.")
         return
 
     song = submission_fetcher.song_fetcher.get_post()
@@ -80,7 +85,8 @@ def send_song(update, context):
     lad_bot.send_message(chat_id=update.effective_chat.id, text=msg)
     sleep(1)
     lad_bot.send_message(chat_id=update.effective_chat.id, text=song.url)
-    print(f"Song sent for {update.message.from_user.first_name} {update.message.from_user.last_name} (username: {update.message.from_user.username}).")
+    print(f"Song sent for {update.message.from_user.first_name} 
+    {update.message.from_user.last_name} (username: {update.message.from_user.username}).")
 
 
 def send_joke(update, context):
@@ -89,22 +95,22 @@ def send_joke(update, context):
     joke = submission_fetcher.joke_fetcher.get_post()
     msg = joke.title + '\n\n' + joke.selftext
     lad_bot.send_message(chat_id=update.effective_chat.id, text=msg)
-    print(f"Joke sent for {update.message.from_user.first_name} {update.message.from_user.last_name} (username: {update.message.from_user.username}).")
+    print(f"Joke sent for {update.message.from_user.first_name} 
+    {update.message.from_user.last_name} (username: {update.message.from_user.username}).")
 
 
 def del_memes(context):
     """Delete the memes sent and edit the text message sent with them"""
 
-    number = len(MEMES_SENT)
-    for meme_sent in MEMES_SENT:  # Delete the photo sent
-        meme_sent[0].delete()
+    for meme_sent in MEMES_SENT:
+        meme_sent[0].delete()  # Delete the photo sent
     # for meme_sent in MEMES_SENT:  # Edit the message sent
         # edited_text = f"i sent a meme for {meme_sent[3]} but its deleted now. sent such a coolio meme and you missed it? lol better luck next time cow"
         # lad_bot.edit_message_text(chat_id=meme_sent[2], message_id=meme_sent[1].message_id, text=edited_text)
 
-    del MEMES_SENT[:]
-    if number != 0:
+    if not MEMES_SENT:
         print("Memes deleted.")
+    MEMES_SENT.clear()
 
 
 def wadlord(update, context):
