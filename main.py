@@ -41,13 +41,15 @@ def inspire(update, context):
     """Send a quote"""
 
     quote = quotes.get_quote()
-    lad_bot.send_message(chat_id=update.effective_chat.id, text=f"{r.choice(msgs).replace('_', 'quote')}, 
-    {update.message.from_user.first_name}:", disable_notification=True)
+    msg = f"{r.choice(msgs).replace('_', 'quote')}, {update.message.from_user.first_name}:"
+    lad_bot.send_message(chat_id=update.effective_chat.id, text=msg, disable_notification=True)
     sleep(1)
-    lad_bot.send_message(chat_id=update.effective_chat.id, text=f"<i><b>{quote}</b></i>", parse_mode='HTML', disable_notification=True)
+    lad_bot.send_message(chat_id=update.effective_chat.id,
+                         text=f"<i><b>{quote}</b></i>", parse_mode='HTML', disable_notification=True)
 
-    print(f"{update.message.from_user.first_name} {update.message.from_user.last_name} 
-    (username: {update.message.from_user.username}) was inspired.")
+    print(f"Inspiration sent for {update.message.from_user.first_name} {update.message.from_user.last_name} "
+    f"(username: {update.message.from_user.username}).")
+
 
 def send_meme(update, context):
     """Send a meme"""
@@ -65,9 +67,9 @@ def send_meme(update, context):
     title, url = post.title, post.url
     photo_sent = lad_bot.send_photo(chat_id=update.effective_chat.id, photo=url, caption=title, disable_notification=True)
     MEMES_SENT.append((photo_sent, msg_sent, update.effective_chat.id, update.message.from_user.first_name))
-    print(f"Meme sent for {update.message.from_user.first_name} 
-    {update.message.from_user.last_name} 
-    (username: {update.message.from_user.username}).")
+    print(f"Meme sent for {update.message.from_user.first_name} "
+    f"{update.message.from_user.last_name} "
+    f"(username: {update.message.from_user.username}).")
 
 
 def send_song(update, context):
@@ -85,8 +87,8 @@ def send_song(update, context):
     lad_bot.send_message(chat_id=update.effective_chat.id, text=msg)
     sleep(1)
     lad_bot.send_message(chat_id=update.effective_chat.id, text=song.url)
-    print(f"Song sent for {update.message.from_user.first_name} 
-    {update.message.from_user.last_name} (username: {update.message.from_user.username}).")
+    print(f"Song sent for {update.message.from_user.first_name} "
+    f"{update.message.from_user.last_name} (username: {update.message.from_user.username}).")
 
 
 def send_joke(update, context):
@@ -95,8 +97,8 @@ def send_joke(update, context):
     joke = submission_fetcher.joke_fetcher.get_post()
     msg = joke.title + '\n\n' + joke.selftext
     lad_bot.send_message(chat_id=update.effective_chat.id, text=msg)
-    print(f"Joke sent for {update.message.from_user.first_name} 
-    {update.message.from_user.last_name} (username: {update.message.from_user.username}).")
+    print(f"Joke sent for {update.message.from_user.first_name} "
+    f"{update.message.from_user.last_name} (username: {update.message.from_user.username}).")
 
 
 def del_memes(context):
@@ -125,7 +127,8 @@ def wadlord(update, context):
         if r.choices([0, 1], weights=[0.8, 0.2], k=1)[0]:  # (Returns list with one element)
             print('wad lord in', update.effective_chat.title, f'({update.effective_chat.type})')
             waddened = msg[1][0] + msg[0][1:] + ' ' + msg[0][0] + msg[1][1:]  # the words exchange their first letters
-            lad_bot.send_message(chat_id=update.effective_chat.id, reply_to_message_id=update.message.message_id, text=waddened)
+            lad_bot.send_message(chat_id=update.effective_chat.id,
+            reply_to_message_id=update.message.message_id, text=waddened)
 
 
 dispatcher.add_handler(CommandHandler(command='joke', callback=send_joke))
