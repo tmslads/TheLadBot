@@ -1,16 +1,15 @@
+import logging
 import random as r
 import shutil
-import requests
 
 import praw
-
+import requests
 
 reddit_id, reddit_secret = open('creds.txt', 'r').read().split()
-reddit = praw.Reddit(client_id=reddit_id,
-                             client_secret=reddit_secret,
-                             user_agent='windows:test:v0.1 (by u/unclesam79)')
+reddit = praw.Reddit(client_id=reddit_id, client_secret=reddit_secret, user_agent='windows:test:v0.1 (by u/unclesam79)')
 
-meme_subreddits = ['dankmemes', 'memes', 'pewdiepiesubmissions', 'biologymemes', 'programmerhumor', 'chemistrymemes', 'physicsmemes']
+meme_subreddits = ['dankmemes', 'memes', 'pewdiepiesubmissions', 'biologymemes', 'programmerhumor', 'chemistrymemes',
+                   'physicsmemes']
 meme_filters = (('all', 3), ('month', 3), ('day', 10), ('week', 5))
 
 song_subreddits = ['listentothis']
@@ -23,8 +22,7 @@ deal_subreddits = ['gamedeals', 'gamedealsfree']
 deal_filters = (('day', 10), ('week', 10))
 
 
-class SubmissionFetcher():
-
+class SubmissionFetcher:
     def __init__(self, subreddits, filter_count, filters):
         self.subreddits = subreddits
         self.filter_count = filter_count
@@ -35,23 +33,21 @@ class SubmissionFetcher():
     def fetch_submissions(self):
         """Retrieve submissions from Reddit, add to SUBMISSIONS"""
 
-        print("Fetching submissions...")
+        logging.info("Fetching submissions...")
         self.SUBMISSIONS.clear()  # Remove previously fetched submissions
         for sub in self.subreddits:
             for i in range(self.filter_count):
                 for submission in reddit.subreddit(sub).top(time_filter=self.filters[i][0], limit=self.filters[i][1]):
                     if submission not in self.SUBMISSIONS:  # Unique submissions only
                         self.SUBMISSIONS.append(submission)
-        print(f"Got {len(self.SUBMISSIONS)} submissions in total from {self.subreddits}.")
+        logging.info(f"Got {len(self.SUBMISSIONS)} submissions in total from {self.subreddits}.")
 
     def get_post(self):
         """Return a random submission from SUBMISSIONS"""
-
         if not self.SUBMISSIONS:
             self.fetch_submissions()
-        post = r.choice(self.SUBMISSIONS)
-        self.SUBMISSIONS.remove(post)
-        return post
+
+        return self.SUBMISSIONS.pop(r.randint(0, len(self.SUBMISSIONS) - 1))
 
     def save_meme(self, number=1):
         """Save memes to disk"""
@@ -60,14 +56,13 @@ class SubmissionFetcher():
             meme = self.get_post()
             response = requests.get(meme.url, stream=True)
             response.raw.decode_content = True  # Prevents file size appearing to be 0
-            local_file = open(f"{'_'.join(removed_nonalnum(meme.title).split())}{meme.url[-4:]}", 'wb')
-            shutil.copyfileobj(response.raw, local_file)
-            local_file.close()
+            with open(f"{'_'.join(removed_nonalnum(meme.title).split())}{meme.url[-4:]}", 'wb') as local_file:
+                shutil.copyfileobj(response.raw, local_file)
+                logging.info(f"Meme saved to disk.")
 
 
 def removed_nonalnum(title):
     """Return title after stripping special characters"""
-
     result = ''
     for character in title:
         if character.isalnum() or character.isspace():
