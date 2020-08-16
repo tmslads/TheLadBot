@@ -101,6 +101,25 @@ def send_joke(update, context):
     f"{update.message.from_user.last_name} (username: {update.message.from_user.username}).")
 
 
+def send_deal(update, context):
+    """Send a game deal"""
+
+    deal = submission_fetcher.deal_fetcher.get_post()
+    post_link = 'https://reddit.com' + deal.permalink
+    store_link = deal.url
+    if post_link == store_link:  # if post is a selfpost (url is same as permalink)
+        store_link = 'N/A'
+    lad_bot.send_message(chat_id=update.effective_chat.id, text=f"Game deal for {update.message.from_user.first_name}: ")
+    title = deal.title
+    store = title[1:title.find(']')]  # extract store name from title
+    # msg = f"{title[title.find(']')+1:]}\nStore: {store}\nReddit post({post_link})\nStore page({store_link})"
+    msg = f"{title[title.find(']')+2:]}\nStore: {store}\n<a href=\"{post_link}\">Reddit post</a>\n<a href=\"{store_link}\">Store page</a>"
+    print(msg)
+    lad_bot.send_message(chat_id=update.effective_chat.id, text=msg, parse_mode='HTML')
+    print(f"Game deal sent for {update.message.from_user.first_name} "
+    f"{update.message.from_user.last_name} (username: {update.message.from_user.username}).")
+
+
 def del_memes(context):
     """Delete the memes sent and edit the text message sent with them"""
 
@@ -124,18 +143,28 @@ def wadlord(update, context):
     msg = ''.join(c for c in msg if c not in punctuation)  # Strip punctuation from message
     msg = msg.split()
     if len(msg) == 2:
-        if r.choices([0, 1], weights=[0.8, 0.2], k=1)[0]:  # (Returns list with one element)
+        if r.choices([0, 1], weights=[0.9, 0.1], k=1)[0]:  # (Returns list with one element)
             print('wad lord in', update.effective_chat.title, f'({update.effective_chat.type})')
             waddened = msg[1][0] + msg[0][1:] + ' ' + msg[0][0] + msg[1][1:]  # the words exchange their first letters
             lad_bot.send_message(chat_id=update.effective_chat.id,
-            reply_to_message_id=update.message.message_id, text=waddened)
+            reply_to_message_id=update.message.message_id, text=f"{' '.join(msg)} more like {waddened}")
+
+
+def thanks(update, context):
+    """thank you"""
+
+    if update.message.reply_to_message.from_user.id == lad_bot.id:
+        lad_bot.send_message(chat_id=update.effective_chat.id, reply_to_message_id=update.message.message_id, text="thank you")
+        print(f"Thank you to {update.message.from_user.full_name} in {update.effective_chat.title}.")
 
 
 dispatcher.add_handler(CommandHandler(command='joke', callback=send_joke))
 dispatcher.add_handler(CommandHandler(command='meme', callback=send_meme))
 dispatcher.add_handler(CommandHandler(command='song', callback=send_song))
 dispatcher.add_handler(CommandHandler(command='inspire', callback=inspire))
-dispatcher.add_handler(MessageHandler(Filters.group & Filters.text & ~ Filters.update.edited_message, wadlord))
+dispatcher.add_handler(CommandHandler(command='deal', callback=send_deal))
+dispatcher.add_handler(MessageHandler(Filters.group & Filters.text & ~ Filters.update.edited_message, wadlord), group=0)
+dispatcher.add_handler(MessageHandler(Filters.reply, thanks), group=1)
 
-updater.job_queue.run_repeating(del_memes, interval=120)  # will be called every 2 minutes
+# updater.job_queue.run_repeating(del_memes, interval=120)  # will be called every 2 minutes
 updater.start_polling()
